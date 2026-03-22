@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>画像回転ツール | 角度を自在に調整して回転</title>
+  <meta name="description" content="画像の向きを自在に調整しましょう。直感的な操作で、写真やデザインの見せ方をカンタンに回転できます。ブラウザだけで無料で使える画像回転ツール。" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="smizuoch" />
+  <meta name="application-name" content="rotate-image" />
+  <meta name="theme-color" content="#2563ff" />
+  <link rel="canonical" href="https://smizuoch.github.io/rotate-image/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:site_name" content="rotate-image" />
+  <meta property="og:title" content="画像回転ツール | 角度を自在に調整して回転" />
+  <meta property="og:description" content="画像の向きを自在に調整しましょう。直感的な操作で、写真やデザインの見せ方をカンタンに回転できます。ブラウザ上で画像をすばやく回転・ダウンロードできる無料ツール。" />
+  <meta property="og:url" content="https://smizuoch.github.io/rotate-image/" />
+  <meta property="og:image" content="https://smizuoch.github.io/rotate-image/ogp.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1245" />
+  <meta property="og:image:height" content="757" />
+  <meta property="og:image:alt" content="画像回転ツールのOGP画像" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="画像回転ツール | 角度を自在に調整して回転" />
+  <meta name="twitter:description" content="画像の向きを自在に調整しましょう。直感的な操作で、写真やデザインの見せ方をカンタンに回転できます。" />
+  <meta name="twitter:image" content="https://smizuoch.github.io/rotate-image/ogp.png" />
+  <meta name="twitter:image:alt" content="画像回転ツールのOGP画像" />
+
+  <script>
+    (() => {
+      const storageKey = 'rotate-image-theme';
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      let theme = systemTheme;
+      try {
+        const savedTheme = localStorage.getItem(storageKey);
+        if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme;
+      } catch { theme = systemTheme; }
+      document.documentElement.dataset.theme = theme;
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+      if (themeColorMeta) themeColorMeta.content = theme === 'dark' ? '#101725' : '#2563ff';
+    })();
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "rotate-image",
+    "alternateName": "画像回転ツール",
+    "url": "https://smizuoch.github.io/rotate-image/",
+    "description": "ブラウザ上で画像を自在に回転し、ダウンロードできる無料ツール。",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "JavaScript enabled",
+    "inLanguage": "ja",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "featureList": [
+      "画像のドラッグ＆ドロップとファイル選択",
+      "90°回転（時計回り・反時計回り）",
+      "スライダーによる自由な角度調整（-180°〜+180°）",
+      "ブラウザ上でのダウンロード"
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-top: #dbdbe1;
+      --bg: #e9e9ec;
+      --surface: #f5f5f7;
+      --panel: #ffffff;
+      --text: #1f1f21;
+      --muted: #6b6b73;
+      --line: #d9d9df;
+      --blue: #2563ff;
+      --blue-hover: #1d4fe0;
+      --primary-text: #ffffff;
+      --primary-disabled-text: #6b6b73;
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+      --workspace-bg: #efeff2;
+      --dropzone-border: #dbdbdf;
+      --dropzone-bg: #ededf0;
+      --dropzone-drag-bg: #f4f7ff;
+      --dropzone-drag-border: #9fb8ff;
+      --dropzone-plus-bg: #d8d8ff;
+      --dropzone-plus-text: #5b63ff;
+      --dropzone-link: #315bf8;
+      --side-panel-bg: #ffffff;
+      --description-text: #45454d;
+      --label-text: #4a4a52;
+      --input-bg: #efeff1;
+      --size-text: #242429;
+      --reset-bg: #f6f6f8;
+      --reset-text: #1f1f21;
+      --secondary-bg: #fff;
+      --secondary-border: #d2d2d8;
+      --secondary-text: #25252a;
+      --secondary-hover-bg: #f8f8fb;
+      --rotate-btn-bg: #f0f0f3;
+      --rotate-btn-border: #d9d9df;
+      --rotate-btn-hover-bg: #e8e8f0;
+      --rotate-btn-hover-border: #b8b8d0;
+      --preview-bg: #d6d6dc;
+      --seo-card-bg: rgba(255, 255, 255, 0.72);
+      --seo-card-border: rgba(217, 217, 223, 0.9);
+      --seo-shadow: 0 18px 60px rgba(0, 0, 0, 0.08);
+      --seo-text: #45454d;
+      --theme-toggle-bg: rgba(255, 255, 255, 0.78);
+      --theme-toggle-border: rgba(31, 31, 33, 0.08);
+      --theme-toggle-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+      --illustration-stroke: #222;
+      --illustration-accent: #c9c9f7;
+      --radius-xl: 20px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+      --ui-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: var(--ui-font);
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 100%);
+    }
+
+    button, input, select { font: inherit; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    .app-shell {
+      position: relative;
+      min-height: 100vh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+    }
+
+    /* ── Theme toggle ── */
+    .theme-toggle {
+      position: absolute;
+      top: 24px; right: 24px;
+      width: 50px; height: 50px;
+      border: 1px solid var(--theme-toggle-border);
+      border-radius: 999px;
+      background: var(--theme-toggle-bg);
+      color: var(--text);
+      box-shadow: var(--theme-toggle-shadow);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .theme-toggle:hover { transform: translateY(-1px); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    .theme-toggle svg {
+      width: 22px; height: 22px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .theme-icon-sun, .theme-icon-moon { grid-area: 1 / 1; transition: opacity 0.16s ease, transform 0.16s ease; }
+    .theme-icon-sun { opacity: 0; transform: scale(0.72) rotate(-18deg); }
+    .theme-icon-moon { opacity: 1; transform: scale(1) rotate(0deg); }
+    :root[data-theme="dark"] .theme-icon-sun { opacity: 1; transform: scale(1) rotate(0deg); }
+    :root[data-theme="dark"] .theme-icon-moon { opacity: 0; transform: scale(0.72) rotate(18deg); }
+
+    /* ── Dialog ── */
+    .dialog {
+      position: relative;
+      width: min(1220px, calc(100vw - 32px));
+      min-height: min(720px, calc(100vh - 32px));
+      background: var(--panel);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: minmax(0, 1.78fr) minmax(360px, 434px);
+    }
+
+    /* ── Workspace ── */
+    .workspace {
+      background: var(--workspace-bg);
+      padding: 28px 28px 20px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ── Dropzone ── */
+    .dropzone {
+      flex: 1;
+      border: 4px dashed var(--dropzone-border);
+      border-radius: 18px;
+      background: var(--dropzone-bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+      min-height: 520px;
+      padding: 24px;
+      outline: none;
+    }
+    .dropzone.dragover {
+      background: var(--dropzone-drag-bg);
+      border-color: var(--dropzone-drag-border);
+      transform: scale(0.997);
+    }
+    .dropzone-icon {
+      position: relative;
+      width: 132px; height: 132px;
+      margin: 0 auto 22px;
+    }
+    .dropzone-icon svg:first-child { width: 100%; height: 100%; display: block; }
+    .dropzone-plus {
+      position: absolute;
+      left: 10px; top: 18px;
+      width: 44px; height: 44px;
+      border-radius: 999px;
+      background: var(--dropzone-plus-bg);
+      color: var(--dropzone-plus-text);
+      display: grid;
+      place-items: center;
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 300;
+    }
+    .dropzone-title {
+      margin: 0;
+      font-size: clamp(28px, 3.3vw, 46px);
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .dropzone-title .link { color: var(--dropzone-link); text-decoration: none; }
+    .dropzone-help {
+      margin: 14px 0 0;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    /* ── Preview area ── */
+    .preview-layout {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .preview-layout.active { display: flex; }
+
+    .preview-wrap {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0 16px;
+      overflow: hidden;
+    }
+
+    .preview-stage {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      overflow: visible;
+      background: var(--preview-bg);
+    }
+
+    .preview-img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 300px);
+      object-fit: contain;
+      border-radius: 12px;
+      transition: transform 0.22s ease;
+      user-select: none;
+      pointer-events: none;
+      transform-origin: center center;
+    }
+
+    .preview-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    .file-info {
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .change-btn {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      border: 1px solid var(--secondary-border);
+      border-radius: var(--radius-sm);
+      background: var(--secondary-bg);
+      color: var(--secondary-text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s ease, border-color 0.16s ease;
+      white-space: nowrap;
+    }
+    .change-btn:hover { background: var(--secondary-hover-bg); border-color: #bbbbc8; }
+    .change-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    /* ── Side panel ── */
+    .side-panel {
+      padding: 36px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: clamp(26px, 2.8vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .panel-description {
+      margin: 12px 0 0;
+      font-size: 17px;
+      color: var(--description-text);
+      line-height: 1.6;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 24px 0;
+    }
+
+    .stack { display: flex; flex-direction: column; gap: 20px; flex: 1; }
+
+    /* ── Rotate buttons ── */
+    .rotate-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .rotate-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 12px;
+      border: 1.5px solid var(--rotate-btn-border);
+      border-radius: var(--radius-md);
+      background: var(--rotate-btn-bg);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background 0.16s ease, border-color 0.16s ease, transform 0.12s ease;
+      user-select: none;
+    }
+    .rotate-btn:hover {
+      background: var(--rotate-btn-hover-bg);
+      border-color: var(--rotate-btn-hover-border);
+      transform: translateY(-1px);
+    }
+    .rotate-btn:active { transform: scale(0.97); }
+    .rotate-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    .rotate-btn svg {
+      width: 38px; height: 38px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .rotate-label { line-height: 1.2; text-align: center; }
+    .rotate-label-sub {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Angle section ── */
+    .angle-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .angle-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .angle-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--label-text);
+    }
+
+    .angle-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .angle-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      font-variant-numeric: tabular-nums;
+      min-width: 44px;
+      text-align: right;
+    }
+
+    .reset-btn {
+      padding: 4px 10px;
+      border: 1px solid var(--secondary-border);
+      border-radius: var(--radius-sm);
+      background: var(--reset-bg);
+      color: var(--reset-text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s ease, opacity 0.16s ease;
+    }
+    .reset-btn:hover { background: var(--secondary-hover-bg); }
+    .reset-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    .reset-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+    .angle-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--line);
+      outline: none;
+      cursor: pointer;
+    }
+    .angle-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: var(--blue);
+      cursor: pointer;
+      border: 3px solid var(--panel);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+      transition: transform 0.12s ease;
+    }
+    .angle-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .angle-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: var(--blue);
+      cursor: pointer;
+      border: 3px solid var(--panel);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    }
+    .angle-slider:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    .angle-ticks {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 2px;
+      font-size: 10px;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    /* ── Status note ── */
+    .status-note {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 20px;
+    }
+    .status-note.error { color: #d0341b; }
+
+    /* ── Buttons ── */
+    .button-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .primary {
+      flex: 1;
+      padding: 14px 22px;
+      background: var(--blue);
+      color: var(--primary-text);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.16s ease, transform 0.12s ease;
+    }
+    .primary:hover { background: var(--blue-hover); transform: translateY(-1px); }
+    .primary:active { transform: scale(0.98); }
+    .primary:disabled {
+      background: var(--input-bg, #efeff1);
+      color: var(--primary-disabled-text);
+      cursor: not-allowed;
+      transform: none;
+    }
+    .primary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    /* ── SEO section ── */
+    .seo-section {
+      width: min(1220px, calc(100vw - 32px));
+      margin: 28px auto 0;
+    }
+    .seo-card {
+      background: var(--seo-card-bg);
+      border: 1px solid var(--seo-card-border);
+      border-radius: var(--radius-xl);
+      padding: 40px 48px;
+      box-shadow: var(--seo-shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .seo-kicker {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .seo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
+      gap: 28px 36px;
+    }
+    .seo-heading {
+      margin: 0;
+      font-size: clamp(28px, 3vw, 40px);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+    .seo-text {
+      margin: 14px 0 0;
+      color: var(--seo-text);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+    .seo-subtitle { margin: 0 0 12px; font-size: 20px; line-height: 1.3; }
+    .seo-list {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--seo-text);
+      line-height: 1.7;
+    }
+    .seo-list + .seo-subtitle { margin-top: 24px; }
+
+    /* ── Dark theme ── */
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg-top: #09111c;
+      --bg: #121b2a;
+      --surface: #172131;
+      --panel: #101725;
+      --text: #eef3fb;
+      --muted: #9facc0;
+      --line: #283449;
+      --blue: #7ea6ff;
+      --blue-hover: #96b7ff;
+      --primary-text: #081120;
+      --primary-disabled-text: #9facc0;
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
+      --workspace-bg: #0d1624;
+      --dropzone-border: #30405b;
+      --dropzone-bg: #121d2d;
+      --dropzone-drag-bg: #17263c;
+      --dropzone-drag-border: #7ea6ff;
+      --dropzone-plus-bg: rgba(126, 166, 255, 0.18);
+      --dropzone-plus-text: #b4c7ff;
+      --dropzone-link: #9fb9ff;
+      --preview-bg: #0a1320;
+      --side-panel-bg: #101725;
+      --description-text: #b9c5d7;
+      --label-text: #b1bdcf;
+      --input-bg: #172233;
+      --size-text: #e4eaf4;
+      --reset-bg: #192335;
+      --reset-text: #eef3fb;
+      --secondary-bg: #141f30;
+      --secondary-border: #33435e;
+      --secondary-text: #e8edf7;
+      --secondary-hover-bg: #1b2940;
+      --rotate-btn-bg: #141f30;
+      --rotate-btn-border: #283449;
+      --rotate-btn-hover-bg: #1a2840;
+      --rotate-btn-hover-border: #3d5070;
+      --seo-card-bg: rgba(16, 23, 37, 0.78);
+      --seo-card-border: rgba(117, 137, 173, 0.32);
+      --seo-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+      --seo-text: #c1cbda;
+      --theme-toggle-bg: rgba(16, 23, 37, 0.76);
+      --theme-toggle-border: rgba(148, 169, 211, 0.2);
+      --theme-toggle-shadow: 0 14px 36px rgba(0, 0, 0, 0.32);
+      --illustration-stroke: #eaf0ff;
+      --illustration-accent: #546788;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 980px) {
+      .app-shell { padding: 12px; }
+      .dialog {
+        width: 100%;
+        min-height: calc(100vh - 24px);
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(380px, 54vh) auto;
+        border-radius: 18px;
+      }
+      .workspace { padding: 18px; }
+      .dropzone { min-height: 320px; }
+      .side-panel { padding: 24px 20px 20px; }
+      .seo-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .rotate-grid { grid-template-columns: 1fr 1fr; }
+      .button-row { flex-direction: column; }
+      .primary { width: 100%; }
+      .panel-title { font-size: 26px; }
+      .panel-description { font-size: 15px; }
+      .dropzone-title { font-size: 20px; }
+      .dropzone-help { font-size: 14px; }
+      .seo-section { width: calc(100vw - 24px); margin-bottom: 24px; }
+      .seo-card { padding: 22px 18px; }
+      .seo-heading { font-size: 24px; }
+      .theme-toggle { top: 12px; right: 12px; width: 46px; height: 46px; }
+      .seo-text, .seo-list { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="app-shell">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="ダークモードに切り替え" title="ダークモードに切り替え">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 14.2A7.8 7.8 0 0 1 9.8 4a8.6 8.6 0 1 0 10.2 10.2Z" />
+        </svg>
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2.5V5.2M12 18.8v2.7M21.5 12h-2.7M5.2 12H2.5M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9M18.7 18.7l-1.9-1.9M7.2 7.2 5.3 5.3" />
+        </svg>
+      </button>
+
+      <section class="dialog" aria-labelledby="pageTitle">
+        <!-- Workspace -->
+        <section class="workspace">
+          <label class="dropzone" id="dropzone" tabindex="0" aria-label="画像をアップロード">
+            <input class="sr-only" id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,image/bmp" />
+            <div id="dropzoneContent">
+              <div class="dropzone-icon" aria-hidden="true">
+                <svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="18" y="38" width="72" height="54" rx="16" style="stroke: var(--illustration-stroke);" stroke-width="5" />
+                  <path d="M18 76.5L40 54L58 71L70 59L90 80" style="stroke: var(--illustration-stroke);" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="72" cy="54" r="8" style="stroke: var(--illustration-stroke);" stroke-width="5" />
+                  <path d="M82 22H108C113.523 22 118 26.4772 118 32V86C118 91.5228 113.523 96 108 96H96" style="stroke: var(--illustration-accent);" stroke-width="18" stroke-linecap="round" opacity="0.85" />
+                </svg>
+                <div class="dropzone-plus">+</div>
+              </div>
+              <p class="dropzone-title">画像をドラッグ＆ドロップ または<span class="link">参照</span></p>
+              <p class="dropzone-help">JPEG, PNG, WEBP, HEIC, HEIF, GIF, BMP の読み込みに対応</p>
+            </div>
+          </label>
+
+          <div class="preview-layout" id="previewLayout">
+            <div class="preview-wrap" id="previewWrap">
+              <div class="preview-stage" id="previewStage">
+                <img class="preview-img" id="previewImg" alt="プレビュー画像" draggable="false" />
+              </div>
+            </div>
+            <div class="preview-footer">
+              <span class="file-info" id="fileInfo"></span>
+              <button class="change-btn" id="changeBtn" type="button">別の画像を選ぶ</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Side panel -->
+        <aside class="side-panel">
+          <h1 class="panel-title" id="pageTitle">画像回転ツール</h1>
+          <p class="panel-description">画像の向きを自在に調整しましょう。直感的な操作で、写真やデザインの見せ方をカンタンに回転できます。画像の角度や向きを調整し、理想のビジュアルを作りましょう。</p>
+          <hr class="divider" />
+
+          <div class="stack">
+            <div class="rotate-grid">
+              <!-- CCW rotate -->
+              <button class="rotate-btn" id="rotateCCWBtn" type="button" aria-label="反時計回りに90°回転">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M24 10A14 14 0 1 0 38 24"/>
+                  <polyline points="34 28 38 24 42 28"/>
+                </svg>
+                <span class="rotate-label">
+                  左へ90°
+                  <span class="rotate-label-sub">反時計回り</span>
+                </span>
+              </button>
+
+              <!-- CW rotate -->
+              <button class="rotate-btn" id="rotateCWBtn" type="button" aria-label="時計回りに90°回転">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M24 10A14 14 0 1 1 10 24"/>
+                  <polyline points="6 20 10 24 14 20"/>
+                </svg>
+                <span class="rotate-label">
+                  右へ90°
+                  <span class="rotate-label-sub">時計回り</span>
+                </span>
+              </button>
+            </div>
+
+            <!-- Angle slider -->
+            <div class="angle-section">
+              <div class="angle-header">
+                <label class="angle-label" for="angleSlider">角度の微調整</label>
+                <div class="angle-right">
+                  <span class="angle-value" id="angleValue">0°</span>
+                  <button class="reset-btn" id="resetAngleBtn" type="button" disabled>リセット</button>
+                </div>
+              </div>
+              <input
+                type="range"
+                id="angleSlider"
+                min="-180"
+                max="180"
+                value="0"
+                step="1"
+                class="angle-slider"
+                aria-label="回転角度"
+                aria-valuemin="-180"
+                aria-valuemax="180"
+                aria-valuenow="0"
+              />
+              <div class="angle-ticks" aria-hidden="true">
+                <span>-180°</span>
+                <span>-90°</span>
+                <span>0°</span>
+                <span>+90°</span>
+                <span>+180°</span>
+              </div>
+            </div>
+
+            <div class="status-note" id="statusNote" aria-live="polite"></div>
+
+            <div class="button-row">
+              <button class="primary" id="downloadBtn" type="button" disabled>ダウンロード</button>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </div>
+
+    <section class="seo-section" aria-labelledby="toolSummaryTitle">
+      <div class="seo-card">
+        <div class="seo-grid">
+          <div>
+            <p class="seo-kicker">Browser-Based Tool</p>
+            <h2 class="seo-heading" id="toolSummaryTitle">ブラウザだけで使える画像回転ツール</h2>
+            <p class="seo-text">rotate-image は、画像をブラウザ上で自由な角度に回転してダウンロードできる静的ツールです。アップロードした画像はサーバーに送信されず、すべての処理がブラウザ内で完結します。</p>
+            <p class="seo-text">スマホで撮影した横向きの写真の修正、傾いた写真のちょっとした補正、デザイン用に特定の角度に回転させたいときなど、日常的なシーンで役立ちます。</p>
+          </div>
+          <div>
+            <h3 class="seo-subtitle">こんな用途に</h3>
+            <ul class="seo-list">
+              <li>横向きに撮影された写真を正しい向きに直したい</li>
+              <li>斜めになった画像をまっすぐに補正したい</li>
+              <li>デザイン用途で特定の角度に回転させたい</li>
+              <li>SNS投稿用に向きを整えたい</li>
+            </ul>
+            <h3 class="seo-subtitle">主な特徴</h3>
+            <ul class="seo-list">
+              <li>ドラッグ＆ドロップとファイル選択に対応</li>
+              <li>90°回転ボタンで素早く向きを変更</li>
+              <li>スライダーで -180°〜+180° の自由な角度調整</li>
+              <li>画像はブラウザ内で処理（サーバー送信なし）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const THEME_STORAGE_KEY = 'rotate-image-theme';
+
+    const state = {
+      file: null,
+      imageURL: '',
+      fileType: 'image/png',
+      originalName: '',
+      rotation: 0,
+      formatNotice: '',
+    };
+
+    const el = {
+      dropzone: document.getElementById('dropzone'),
+      fileInput: document.getElementById('fileInput'),
+      dropzoneContent: document.getElementById('dropzoneContent'),
+      previewLayout: document.getElementById('previewLayout'),
+      previewImg: document.getElementById('previewImg'),
+      previewWrap: document.getElementById('previewWrap'),
+      fileInfo: document.getElementById('fileInfo'),
+      changeBtn: document.getElementById('changeBtn'),
+      rotateCCWBtn: document.getElementById('rotateCCWBtn'),
+      rotateCWBtn: document.getElementById('rotateCWBtn'),
+      angleSlider: document.getElementById('angleSlider'),
+      angleValue: document.getElementById('angleValue'),
+      resetAngleBtn: document.getElementById('resetAngleBtn'),
+      downloadBtn: document.getElementById('downloadBtn'),
+      statusNote: document.getElementById('statusNote'),
+      themeToggle: document.getElementById('themeToggle'),
+    };
+
+    // ── Theme ──────────────────────────────────────────────────
+    function readStoredTheme() {
+      try { return localStorage.getItem(THEME_STORAGE_KEY); } catch { return null; }
+    }
+    function writeStoredTheme(t) {
+      try { localStorage.setItem(THEME_STORAGE_KEY, t); } catch {}
+    }
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.content = theme === 'dark' ? '#101725' : '#2563ff';
+      const nextLabel = theme === 'dark' ? 'ライトモードに切り替え' : 'ダークモードに切り替え';
+      el.themeToggle.setAttribute('aria-label', nextLabel);
+      el.themeToggle.setAttribute('title', nextLabel);
+    }
+    applyTheme(document.documentElement.dataset.theme || readStoredTheme() || 'light');
+    el.themeToggle.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      writeStoredTheme(next);
+    });
+
+    // ── File loading ───────────────────────────────────────────
+    const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'image/gif', 'image/bmp'];
+    const EXTENSION_TO_MIME = {
+      jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png',
+      webp: 'image/webp', heic: 'image/heic', heif: 'image/heif',
+      gif: 'image/gif', bmp: 'image/bmp',
+    };
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function setStatus(msg, isError) {
+      el.statusNote.textContent = msg;
+      el.statusNote.className = 'status-note' + (isError ? ' error' : '');
+    }
+
+    function getFileExtension(name) {
+      const match = name.toLowerCase().match(/\.([^.]+)$/);
+      return match ? match[1] : '';
+    }
+
+    function detectInputType(file) {
+      const fileType = (file.type || '').toLowerCase();
+      if (ACCEPTED.includes(fileType)) return fileType;
+      return EXTENSION_TO_MIME[getFileExtension(file.name)] || '';
+    }
+
+    function getFormatNotice(fileType) {
+      if (fileType === 'image/gif') return 'GIF は静止画として編集され、保存時は PNG になります。';
+      if (['image/heic', 'image/heif', 'image/bmp'].includes(fileType)) return 'この形式は保存時に PNG に変換されます。';
+      return '';
+    }
+
+    function getPreferredExport(fileType) {
+      if (fileType === 'image/png') return { mime: 'image/png' };
+      if (fileType === 'image/webp') return { mime: 'image/webp', quality: 0.92 };
+      if (fileType === 'image/jpeg') return { mime: 'image/jpeg', quality: 0.92 };
+      return { mime: 'image/png' };
+    }
+
+    function getExportExtension(mime) {
+      if (mime === 'image/png') return 'png';
+      if (mime === 'image/webp') return 'webp';
+      return 'jpg';
+    }
+
+    function getExportLabel(mime) {
+      if (mime === 'image/png') return 'PNG';
+      if (mime === 'image/webp') return 'WEBP';
+      return 'JPEG';
+    }
+
+    // ── Rotation ───────────────────────────────────────────────
+    function normalizeRotation(deg) {
+      let n = ((deg % 360) + 360) % 360;
+      if (n > 180) n -= 360;
+      return n;
+    }
+
+    function syncRotationUI() {
+      const rot = state.rotation;
+      el.previewImg.style.transform = `rotate(${rot}deg)`;
+      el.angleValue.textContent = rot + '°';
+      el.angleSlider.value = rot;
+      el.angleSlider.setAttribute('aria-valuenow', rot);
+      el.resetAngleBtn.disabled = rot === 0;
+    }
+
+    function setRotation(deg) {
+      state.rotation = normalizeRotation(deg);
+      syncRotationUI();
+    }
+
+    el.rotateCCWBtn.addEventListener('click', () => {
+      if (!state.file) return;
+      setRotation(state.rotation - 90);
+    });
+
+    el.rotateCWBtn.addEventListener('click', () => {
+      if (!state.file) return;
+      setRotation(state.rotation + 90);
+    });
+
+    el.angleSlider.addEventListener('input', () => {
+      if (!state.file) return;
+      state.rotation = parseInt(el.angleSlider.value, 10);
+      el.previewImg.style.transform = `rotate(${state.rotation}deg)`;
+      el.angleValue.textContent = state.rotation + '°';
+      el.angleSlider.setAttribute('aria-valuenow', state.rotation);
+      el.resetAngleBtn.disabled = state.rotation === 0;
+    });
+
+    el.resetAngleBtn.addEventListener('click', () => {
+      if (!state.file) return;
+      state.rotation = 0;
+      syncRotationUI();
+    });
+
+    // ── File loading ───────────────────────────────────────────
+    function loadFile(file) {
+      if (!file) return;
+      const fileType = detectInputType(file);
+      if (!fileType) {
+        setStatus('対応していないファイル形式です。JPEG, PNG, WEBP, HEIC, HEIF, GIF, BMP を選択してください。', true);
+        return;
+      }
+
+      const nextImageURL = URL.createObjectURL(file);
+      const probe = new Image();
+      probe.onload = () => {
+        if (state.imageURL) URL.revokeObjectURL(state.imageURL);
+        state.file = file;
+        state.fileType = fileType;
+        state.originalName = file.name.replace(/\.[^.]+$/, '');
+        state.imageURL = nextImageURL;
+        state.rotation = 0;
+        state.formatNotice = getFormatNotice(fileType);
+
+        el.previewImg.src = nextImageURL;
+        el.dropzone.style.display = 'none';
+        el.previewLayout.classList.add('active');
+        el.fileInfo.textContent = file.name + ' — ' + formatBytes(file.size);
+        el.downloadBtn.disabled = false;
+        syncRotationUI();
+        setStatus(state.formatNotice, false);
+      };
+      probe.onerror = () => {
+        URL.revokeObjectURL(nextImageURL);
+        setStatus('画像の読み込みに失敗しました。ブラウザで開けない形式の可能性があります。', true);
+      };
+      probe.src = nextImageURL;
+    }
+
+    // ── Drag & drop ────────────────────────────────────────────
+    el.dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      el.dropzone.classList.add('dragover');
+    });
+    el.dropzone.addEventListener('dragleave', e => {
+      if (!el.dropzone.contains(e.relatedTarget)) el.dropzone.classList.remove('dragover');
+    });
+    el.dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      el.dropzone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) loadFile(file);
+    });
+    el.dropzone.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.fileInput.click(); }
+    });
+    el.fileInput.addEventListener('change', () => {
+      if (el.fileInput.files[0]) loadFile(el.fileInput.files[0]);
+      el.fileInput.value = '';
+    });
+
+    el.changeBtn.addEventListener('click', e => {
+      e.preventDefault();
+      el.fileInput.click();
+    });
+
+    el.previewWrap.addEventListener('dragover', e => e.preventDefault());
+    el.previewWrap.addEventListener('drop', e => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) loadFile(file);
+    });
+
+    // ── Download ───────────────────────────────────────────────
+    el.downloadBtn.addEventListener('click', () => {
+      if (!state.file) return;
+
+      const img = new Image();
+      img.onload = () => {
+        const angle = state.rotation;
+        const rad = (angle * Math.PI) / 180;
+        const cos = Math.abs(Math.cos(rad));
+        const sin = Math.abs(Math.sin(rad));
+
+        const cw = Math.round(img.naturalWidth * cos + img.naturalHeight * sin);
+        const ch = Math.round(img.naturalWidth * sin + img.naturalHeight * cos);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = cw;
+        canvas.height = ch;
+        const ctx = canvas.getContext('2d');
+
+        ctx.save();
+        ctx.translate(cw / 2, ch / 2);
+        ctx.rotate(rad);
+        ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+        ctx.restore();
+
+        const preferredExport = getPreferredExport(state.fileType);
+        const suffix = 'rotate' + angle;
+
+        canvas.toBlob(blob => {
+          if (!blob) { setStatus('書き出しに失敗しました。', true); return; }
+          const actualType = blob.type || preferredExport.mime;
+          const filename = state.originalName + '_' + suffix + '.' + getExportExtension(actualType);
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(url);
+          const fallbackNotice = actualType !== preferredExport.mime
+            ? `保存形式は ${getExportLabel(actualType)} になりました。`
+            : state.formatNotice;
+          setStatus(fallbackNotice, false);
+        }, preferredExport.mime, preferredExport.quality);
+      };
+      img.onerror = () => {
+        setStatus('書き出し用の画像を読み込めませんでした。別の画像で再試行してください。', true);
+      };
+      img.src = state.imageURL;
+    });
+  </script>
+</body>
+</html>
