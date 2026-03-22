@@ -19,8 +19,8 @@
   <meta property="og:url" content="https://smizuoch.github.io/rotate-image/" />
   <meta property="og:image" content="https://smizuoch.github.io/rotate-image/ogp.png" />
   <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1245" />
-  <meta property="og:image:height" content="757" />
+  <meta property="og:image:width" content="1238" />
+  <meta property="og:image:height" content="748" />
   <meta property="og:image:alt" content="画像回転ツールのOGP画像" />
 
   <meta name="twitter:card" content="summary_large_image" />
@@ -685,8 +685,8 @@
       <section class="dialog" aria-labelledby="pageTitle">
         <!-- Workspace -->
         <section class="workspace">
-          <label class="dropzone" id="dropzone" tabindex="0" aria-label="画像をアップロード">
-            <input class="sr-only" id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,image/bmp" />
+          <input class="sr-only" id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp" />
+          <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="画像をアップロード" aria-controls="fileInput">
             <div id="dropzoneContent">
               <div class="dropzone-icon" aria-hidden="true">
                 <svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -698,9 +698,9 @@
                 <div class="dropzone-plus">+</div>
               </div>
               <p class="dropzone-title">画像をドラッグ＆ドロップ または<span class="link">参照</span></p>
-              <p class="dropzone-help">JPEG, PNG, WEBP, HEIC, HEIF, GIF, BMP の読み込みに対応</p>
+              <p class="dropzone-help">JPEG, PNG, WEBP, GIF, BMP の読み込みに対応</p>
             </div>
-          </label>
+          </div>
 
           <div class="preview-layout" id="previewLayout">
             <div class="preview-wrap" id="previewWrap">
@@ -873,11 +873,10 @@
     });
 
     // ── File loading ───────────────────────────────────────────
-    const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'image/gif', 'image/bmp'];
+    const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
     const EXTENSION_TO_MIME = {
       jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png',
-      webp: 'image/webp', heic: 'image/heic', heif: 'image/heif',
-      gif: 'image/gif', bmp: 'image/bmp',
+      webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp',
     };
 
     function formatBytes(bytes) {
@@ -904,7 +903,7 @@
 
     function getFormatNotice(fileType) {
       if (fileType === 'image/gif') return 'GIF は静止画として編集され、保存時は PNG になります。';
-      if (['image/heic', 'image/heif', 'image/bmp'].includes(fileType)) return 'この形式は保存時に PNG に変換されます。';
+      if (fileType === 'image/bmp') return 'BMP は保存時に PNG に変換されます。';
       return '';
     }
 
@@ -978,7 +977,7 @@
       if (!file) return;
       const fileType = detectInputType(file);
       if (!fileType) {
-        setStatus('対応していないファイル形式です。JPEG, PNG, WEBP, HEIC, HEIF, GIF, BMP を選択してください。', true);
+        setStatus('対応していないファイル形式です。JPEG, PNG, WEBP, GIF, BMP を選択してください。', true);
         return;
       }
 
@@ -1012,6 +1011,9 @@
     el.dropzone.addEventListener('dragover', e => {
       e.preventDefault();
       el.dropzone.classList.add('dragover');
+    });
+    el.dropzone.addEventListener('click', () => {
+      el.fileInput.click();
     });
     el.dropzone.addEventListener('dragleave', e => {
       if (!el.dropzone.contains(e.relatedTarget)) el.dropzone.classList.remove('dragover');
